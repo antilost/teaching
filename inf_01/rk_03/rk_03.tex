@@ -1,0 +1,139 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[left=2cm,right=2cm,top=3cm,bottom=3cm,bindingoffset=0cm,pdftex,landscape]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{indentfirst}
+
+\usepackage{color}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{textcomp} % Для значка градуса
+\usepackage{amssymb}  % Для значка треугольника
+
+\begin{document}
+\parindent=1cm
+\pagestyle{empty}
+
+\lstset{ language=Pascal, basicstyle=\small\ttfamily, numbers=left, numberstyle=\tiny, stepnumber=1, numbersep=5pt, extendedchars=\true, showstringspaces=false, breakatwhitespace=true, frame=single, keepspaces=true }
+
+\clearpage
+\section*{Рубежный контроль №3}
+\subsection*{Вариант №1}
+\paragraph*{1.1.}
+Задана строка, состоящая из слов, разделённых пробелами. Заменить каждый пробел на символ подчёркивания.
+\begin{verbatim}
+pen  pineapple apple   pen
+pen__pineapple_apple___pen
+\end{verbatim}
+\paragraph*{1.2.}
+Задан массив записей (\texttt{record}) с информацией о студентах (всего $ 1 \le N \le 10 $ записей). Каждый студент имеет имя, фамилию и количество набранных за контрольную работу баллов (от 0 до 20).
+Удалить из массива всех студентов, которые набрали за работу менее 12 баллов.
+\paragraph*{1.3.}
+Написать собственную реализацию функции \texttt{Copy}. Cравнить результаты работы стандартного и своего вариантов процедуры для произвольной строки.
+\begin{verbatim}
+function MyCopy ( Source : String; StartChar, Count : Integer ) : String;
+var
+...
+begin
+...
+end;
+\end{verbatim}
+При написании своей функции работать со строкой как с массивом символов (с доступом по индексу, например, \texttt{S[3]}). Также можно использовать стандартные функции:
+\begin{enumerate}
+\item \texttt{Length(S)} --- возвращает текущую длину строки \texttt{S};
+\item \texttt{SetLength(S, N)} --- устанавливает длину строки \texttt{S} равной \texttt{N} символов (с помощью \texttt{SetLength} можно удлинять или укорачивать строки).
+\end{enumerate}
+
+
+\clearpage
+\section*{Рубежный контроль №3}
+\subsection*{Вариант №2}
+\paragraph*{2.1.}
+Задана строка, состоящая из слов, разделённых пробелами. Найти количество слов.
+\begin{verbatim}
+pen  pineapple apple   pen
+4
+\end{verbatim}
+\paragraph*{1.2.}
+Задан массив записей (\texttt{record}) с информацией о студентах (всего $ 1 \le N \le 10 $ записей). Каждый студент имеет имя, фамилию и количество набранных за контрольную работу баллов (от 0 до 20).
+Вывести информацию о студенте по заданной фамилии (если фамилии повторяются --- вывести всех, --- если нет ни одного, то написать соответствующее сообщение).
+\paragraph*{2.3.}
+Написать собственную реализацию процедуры \texttt{Delete}. Cравнить результаты работы стандартного и своего вариантов процедуры для произвольной строки.
+\begin{verbatim}
+procedure MyDelete ( var Source : string; StartChar : Integer; Count : Integer ) 
+var
+...
+begin
+...
+end;
+\end{verbatim}
+При написании своей процедуры работать со строкой как с массивом символов (с доступом по индексу, например, \texttt{S[3]}). Также можно использовать стандартные функции:
+\begin{enumerate}
+\item \texttt{Length(S)} --- возвращает текущую длину строки \texttt{S};
+\item \texttt{SetLength(S, N)} --- устанавливает длину строки \texttt{S} равной \texttt{N} символов (с помощью \texttt{SetLength} можно удлинять или укорачивать строки).
+\end{enumerate}
+
+
+\clearpage
+\section*{Рубежный контроль №3}
+\subsection*{Вариант №3}
+\paragraph*{3.1.}
+Задан массив из $1 \le N \le 10$ строк. Сформировать новую строку, составленную из элементов массива, разделённых запятыми
+\begin{verbatim}
+4
+apple
+pen
+pineapple
+apple,pen,pineapple
+\end{verbatim}
+\paragraph*{3.2.}
+Задан массив записей (\texttt{record}) с информацией о студентах (всего $ 1 \le N \le 10 $ записей). Каждый студент имеет имя, фамилию и количество набранных за контрольную работу баллов (от 0 до 20).
+Отсортировать массив по количеству набранных баллов по убыванию.
+\paragraph*{3.3.}
+Написать собственную реализацию процедуры \texttt{Insert}. Cравнить результаты работы стандартного и своего вариантов процедуры для произвольной строки.
+\begin{verbatim}
+procedure MyInsert ( const InsertStr : string; var TargetStr : string; Position : Integer ) ;
+var
+...
+begin
+...
+end;
+\end{verbatim}
+При написании своей процедуры работать со строкой как с массивом символов (с доступом по индексу, например, \texttt{S[3]}). Также можно использовать стандартные функции:
+\begin{enumerate}
+\item \texttt{Length(S)} --- возвращает текущую длину строки \texttt{S};
+\item \texttt{SetLength(S, N)} --- устанавливает длину строки \texttt{S} равной \texttt{N} символов (с помощью \texttt{SetLength} можно удлинять или укорачивать строки).
+\end{enumerate}
+
+\clearpage
+\section*{Рубежный контроль №3}
+\subsection*{Вариант №4}
+\paragraph*{4.1.}
+Задана строка с текстом на английском языке. Вывести самое чаще всего встречающееся в этом тексте слово и число его вхождений. Игнорировать регистр (т.е. "It" и "it" считать за одно и тоже слово).
+\begin{verbatim}
+The young man suddenly picked up one of Sybil's wet feet, which were drooping over the end of the float, and kissed the arch.
+the 4
+\end{verbatim}
+\paragraph*{4.2.}
+Задан массив записей (\texttt{record}) с информацией о студентах (всего $ 1 \le N \le 10 $ записей). Каждый студент имеет имя, фамилию и количество набранных за контрольную работу баллов (от 0 до 20).
+Вывести среднее число баллов.
+\paragraph*{4.3.}
+Написать собственную реализацию функции \texttt{Concat}. Cравнить результаты работы стандартного и своего вариантов функции для произвольной строки.
+\begin{verbatim}
+function MyConcat ( const String1, String2 : string ) : string;
+var
+...
+begin
+...
+end;
+\end{verbatim}
+При написании своей функции работать со строкой как с массивом символов (с доступом по индексу, например, \texttt{S[3]}). Также можно использовать стандартные функции:
+\begin{enumerate}
+\item \texttt{Length(S)} --- возвращает текущую длину строки \texttt{S};
+\item \texttt{SetLength(S, N)} --- устанавливает длину строки \texttt{S} равной \texttt{N} символов (с помощью \texttt{SetLength} можно удлинять или укорачивать строки).
+\end{enumerate}
+
+
+
+\end{document}
