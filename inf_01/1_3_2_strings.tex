@@ -1,0 +1,257 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[left=1cm,right=1cm,top=1cm,bottom=1.5cm,bindingoffset=0cm,pdftex]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{indentfirst}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{textcomp} % Для значка градуса \textdegree
+\usepackage{amssymb}  % Для значка треугольника
+\usepackage{amsmath}
+\begin{document}
+\parindent=1cm
+\pagestyle{empty}
+\lstset{ language=Pascal, basicstyle=\small\ttfamily, numbers=left, numberstyle=\tiny, stepnumber=1, numbersep=5pt, extendedchars=\true, showstringspaces=false, breakatwhitespace=true, frame=single, keepspaces=true }
+
+\clearpage
+\section*{Обработка символьных строк}
+\subsection*{Объявление строк}
+В Delphi переменные строк объявляются в разделе \texttt{var} с указанием типа данных \texttt{String}.
+\begin{verbatim}
+var
+  P, Q: String;   
+  T: String[10]; 
+\end{verbatim}
+Длина строк P, Q ограничена только объёмом оперативной памяти компьютера, а длина строки T ограничена 10 символами (как указано при определении строки T).
+
+\subsection*{Сложение строк}
+Используемый для представления строк тип данных \texttt{String} поддерживает только одну операцию сложения \texttt{+}, которую также называют соединением или конкатенацией строк.
+\begin{verbatim}
+var
+  A, B, C: String;
+begin
+  A := 'aa';
+  B := 'bbb';
+  C := A + B;   // aabbb
+  C := C + '!'; // aabbb!
+\end{verbatim}
+В примере переменной \texttt{A} присваивается значение \texttt{aa}, а переменной \texttt{B} -- значение \texttt{bbb}; в переменную \texttt{С} сохраняется результат сложения переменных-строк \texttt{A} и \texttt{B}, т.е. сначала содержимое строки \texttt{A}, а затем сразу же содержимое строки \texttt{B}.
+
+\subsection*{Ввод и вывод строк}
+Для ввода строк используется процедура \texttt{ReadLn}, в которую передаётся один параметр -- имя переменной -строки. Всё, что пользователь вводит в консоли до символа переноса строки, т.е. до нажатия клавиши Enter, записывается в переменную, имя которой передано процедуре \texttt{ReadLn}.
+Для вывода строк на экран можно использовать процедуры \texttt{Write} и \texttt{WriteLn} как при выводе числовых данных.
+\begin{verbatim}
+var
+  Name: String;
+begin
+  Write('Enter your name: ');
+  ReadLn(Name);
+  WriteLn('Hello, ' + Name + '!');
+\end{verbatim}
+\paragraph*{Пример 1.} Ввод, вывод и сложение строк.
+\begin{verbatim}
+program ExampleInputOutputStr;
+var
+  P, Q: String;
+  T: String[10];
+begin
+  P := 'Hello';
+  Q := P + ', world!';
+  WriteLn(Q); // На экран выводится "Hello, world!"
+
+  T := Q;
+  WriteLn(T); // На экран выводится только "Hello, wor",
+              // поскольку длина строки T ограничена
+  ReadLn;
+end.
+\end{verbatim}
+
+
+\subsection*{Строка как массив символов}
+Строка \texttt{String} представляет собой упорядоченную последовательность символов (в Delphi для представления символов используется тип данных \texttt{Char}), т.е. по сути массив символов. Каждый символ в строке имеет свой порядковый номер -- индекс, -- от 1 до числа, равного длине строки. Доступ к отдельным символам строки осуществляется при помощи квадратных скобок с указанием индекса (можно получать значения символов и изменять их при помощи оператора присваивания \texttt{:=}).
+\begin{verbatim}
+...
+var
+  S: String;
+...
+  S := 'abcd';
+  S[1] := 'A';
+  S[3] := S[4];
+  WriteLn(S); // Abdd
+...
+\end{verbatim}
+При указании индекса вне доступного диапазона, т.е. меньше 1 или больше длины строки, возникает исключение (аварийная ситуация), вызывающее завершение работы программы.
+
+\subsubsection*{Получение и изменение длины строки}
+Для получения длины строки существует функция \texttt{Length}, возвращающая целое число -- длину строки.
+Длина строки динамически изменяется при присваивании новых значений, но можно самостоятельно явно задать новую длину строки, используя процедуру \texttt{SetLength}.
+\begin{itemize}
+\item \texttt{function Length(S: String): Integer}
+\item \texttt{procedure SetLength(var S: String; NewLength: Integer)}
+\end{itemize}
+Если новая длина строки больше текущей, то процедура \texttt{SetLength} удлиняет строку с конца: теперь можно изменять символы с индексом больше, чем предыдущая длина строки.
+Если новая длина строки меньше текущей, то процедура \texttt{SetLength} обрезает строку с конца, и тогда становятся доступны только символы с номерами от 1 до новой длины строки.
+
+\paragraph*{Пример 2.} Процедура, оставляющая N последних символов строки.
+\begin{verbatim}
+program ExampleCutStr;
+
+{$APPTYPE CONSOLE}
+
+uses
+  SysUtils;
+
+// Обрезать строку P, оставив N последних символов с конца
+// Строка P изменяется, поэтому указан модификатор var
+// Число N не изменяется -- просто параметр, сколько символов оставить
+procedure CutStr(var P: String; const N: Integer);
+var
+  I, L: Integer; // Счётчик цикла I и длина строки P
+begin
+  L := Length(P);
+
+  // Переносим в начало строки P те символы, которые не удаляются
+  for I := 1 to N do
+    P[I] := P[L - N + I];
+
+  // SetLength обрежет строку с конца, оставив только N символов
+  SetLength(P, N);
+end;
+
+var
+  S: String;
+begin
+  S := 'Hello, world!';
+  CutStr(S, 6);
+  WriteLn(S); // world!
+  ReadLn;
+end.
+\end{verbatim}
+
+\subsection*{Стандартные функции и процедуры для работы со строками}
+В стандартных библиотеках Delphi уже существует множество полезных процедур, позволяющих быстро изменять строки \texttt{String}, чтобы каждый раз не работать со строкой как с массивом символов.
+\subsubsection*{Функции сравнения строк}
+\begin{itemize}
+\item Функция \texttt{function AnsiCompareStr(const S1, S2: String): Integer} сравнивает две строки \texttt{S1} и \texttt{S2} с учётом регистра символов. Возвращает значение \texttt{<0} если \texttt{S1 < S2}, \texttt{0} если \texttt{S1 = S2}, \texttt{>0} если \texttt{S1 > S2}.
+\item Функция \texttt{function AnsiCompareText(const S1, S2: String): Integer} сравнивает две строки \texttt{S1} и \texttt{S2} без учёта регистра символов (в этом случае заглавные и строчные буквы эквиваленты, например, строки \texttt{abcD} и \texttt{AbCd} будут равны). Возвращает значение \texttt{<0} если \texttt{S1 < S2}, \texttt{0} если \texttt{S1 = S2}, \texttt{>0} если \texttt{S1 > S2}.
+\end{itemize}
+\subsubsection*{Поиск, вставка, удаление и копирование строк}
+\begin{itemize}
+\item Функция \texttt{function Pos(Substr: String; Str: String): Integer} возвращает позицию (индекс) первого вхождения \texttt{Substr} в строке \texttt{Str}. Если \texttt{Substr} нет в \texttt{Str}, возвращает 0.
+\item Функция \texttt{function Insert(Source: String; var S: String; Index: Integer): Integer} вставляет строку \texttt{Source} в строку \texttt{S}, начиная с номера символа, равного \texttt{Index}
+\item Процедура \texttt{procedure Delete(var S: String; Index, Count: Integer)} удаляет из строки \texttt{S} подстроку, начинающуюся с номера символа, равного \texttt{Index}, и содержащую до \texttt{Count} символов.
+\item Функция \texttt{function Copy(S: String; Index, Count: Integer): String} возвращает подстроку строки \texttt{S}, начиная с номера символа, равного \texttt{Index} и содержащую до \texttt{Count} символов.
+\end{itemize}
+\subsubsection*{Перевод из строк в числовые форматы и обратно}
+\begin{itemize}
+\item Функция \texttt{function IntToStr(N: Integer): String} преобразует целое число \texttt{N} в строку;
+\item Функция \texttt{function StrToInt(S: String): Integer} преобразует строку \texttt{S} в целое число;
+\item Функция \texttt{function FloatToStr(X: Extended): String} преобразует действительное число \texttt{X} (число с плавающей точкой) в строку;
+\item Функция \texttt{function StrToFloat(S: String): Extended} преобразует строку \texttt{S} в число с плавающей точкой.
+\end{itemize}
+При переводе из строк в числа важно, чтобы в строке было записано корректное числовое значение, иначе при преобразовании будет вызвано исключение, завершающее работу программы.
+\begin{verbatim}
+  S := '14';
+  I := StrToInt(S);   // OK
+  D := StrToFloat(S); // OK
+
+  S := '14 ';
+  I := StrToInt(S);   // Ошибка, пробел после цифр
+  D := StrToFloat(S); // Ошибка, пробел после цифр
+
+  S := '10,7';
+  I := StrToInt(S);   // Ошибка, не целое число
+  D := StrToFloat(S); // OK
+
+  S := '5.2';
+  I := StrToInt(S);   // Ошибка, не целое число
+  D := StrToFloat(S); // Ошибка, некорректный разделитель
+
+  S := '1e2';
+  I := StrToInt(S);   // Ошибка, не целое число
+  D := StrToFloat(S); // OK
+
+  S := '1E-3';
+  I := StrToInt(S);   // Ошибка, не целое число
+  D := StrToFloat(S); // OK
+\end{verbatim}
+\subsubsection*{Прочие функции}
+\begin{itemize}
+\item Функция \texttt{function AnsiLowerCase(const S: String): String} возвращает строку \texttt{S}, преобразованную к нижнему регистру;
+\item Функция \texttt{function AnsiUpperCase(const S: String): String} возвращает строку \texttt{S}, преобразованную к верхнему регистру;
+\item Функция \texttt{function Trim(const S: String): String} удаляет из строки \texttt{S} начальные и завершающие пробелы и управляющие символы;
+\item Функция \texttt{function TrimLeft(const S: String): String} удаляет из строки \texttt{S} начальные пробелы и управляющие символы;
+\item Функция \texttt{function TrimRight(const S: String): String} удаляет из строки \texttt{S} завершающие пробелы и управляющие символы;
+\item Функция \texttt{function Concat(const String1 \{,String2 \ldots\} : String ) : String} соединяет все переданные в аргументах строки в одну: тоже самое, что вызвать операцию сложения для всех аргументов \texttt{String1 + String2 + \ldots}.
+\end{itemize}
+
+\clearpage
+\section*{Перечисления, диапазоны и множества}
+\subsection*{Перечисления (enumerations)}
+%TODO
+\subsection*{Диапазоны (subranges)}
+%TODO
+\subsection*{Множества (set)}
+%TODO
+
+Ключевое слово \texttt{set} объявляет тип множества до 255 дискретных значений. Не путайте с перечислениями -- они могут принимать только одно значение. Переменная множества всегда держит все значения набора -- некоторые установлены, некоторые нет. 
+
+Перечислимый тип может быть:
+\begin{itemize}
+\item Символы типа "A" и "5";
+\item Целые числа в диапазоне от 0 до 255;
+\item Перечисления названий как Diamonds, Clubs.
+\end{itemize}
+
+Помните, что \texttt{set} является переменной. Также, в начале все возможные значения не установлены. Когда вы инициализируете множество, вы можете установить все или некоторые из его значений. Потом вы можете проверить переменную, чтобы узнать, находится ли ее значение в наборе. Вы можете захотеть сделать это, например, при анализе кода, чтобы узнать, является ли следующий символ символом строчных букв.
+
+\begin{itemize}
+\item \texttt{exclude} исключает значение из переменной набора (множества);
+\item \texttt{in} используется, чтобы проверить, является ли значение членом множества;
+\item \texttt{include} включает значение во множество переменных.
+\end{itemize}
+
+\paragraph*{Пример 3.} Найти количество гласных букв в заданной строке.
+\begin{verbatim}
+program ExampleVowels;
+
+{$APPTYPE CONSOLE}
+
+uses
+  SysUtils;
+
+var
+  Vowels: set of 'A' .. 'z' = ['e', 'y', 'u', 'i', 'o', 'a'];
+  S: String;
+  I, C: Integer;
+begin
+  S := 'Hello, world!';
+  C := 0;
+  for I := 1 to Length(S) do
+    if S[I] in Vowels then
+      C := C + 1;
+  WriteLn(C);
+  ReadLn;
+end.
+\end{verbatim}
+
+
+\subsection*{Задачи}
+\begin{enumerate}
+\item Ввести строку из букв.
+\begin{itemize}
+\item Поменять все буквы «а» на букву «А» и вывести;
+\item Вывести строку в обратном порядке;
+\item Упорядочить буквы в строке по алфавиту и вывести.
+\end{itemize}   
+\item Ввести простое предложение (без знаков препинания внутри, слова разделены одним пробелом, в конце строки один из знаков – «.», «!», «?»). Подсчитать количество слов начинающихся и заканчивающихся на одинаковую букву. Использовать подпрограмму.
+\item Ввести простое предложение. Заменить в нём одно из слов (по запросу) на новое и вывести. Если запрашиваемого слова нет, вывести соответствующее сообщение. Использовать подпрограмму.
+\item Определить строчную букву латинского алфавита, которая чаще всего встречается в строке произвольной длины.
+\item Строка произвольной длины состоит из слов, отделенных друг от друга пробелом. Записать эти слова в массив строк так, чтобы каждое слово являлось элементом массива. Упорядочить элементы полученного массива по алфавиту.
+\item Преобразовать строку произвольной длины, удалив в ней все повторения строчных букв латинского алфавита.
+\item Строка произвольной длины состоит из слов, отделенных друг от друга пробелом. Записать эти слова в новую строку, изменив порядок их следования на обратный.
+\end{enumerate}
+
+
+\end{document}
